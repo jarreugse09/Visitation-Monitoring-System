@@ -8,10 +8,16 @@ import officeRoute from './routes/office.route'
 import visitorRoute from './routes/visitor.route'
 import visitorRecordRoute from './routes/visitorRecord.route'
 import transactionRoute from './routes/transaction.route'
-
+import cors from "cors";
 
 const app: Application = express();
 
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,7 +28,12 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use('/api/v1/auth', authRoute)
-app.use('/api/v1/college',)
+app.use('/api/v1/colleges', collegeRoute)
+app.use('/api/v1/departments', departmentRoute)
+app.use('/api/v1/office', officeRoute)
+app.use('/api/v1/visitor', visitorRoute)
+app.use('/api/v1/transactions', transactionRoute)
+app.use('/api/v1/visitorRecord', visitorRecordRoute)
 // Handle undefined routes
 app.all(/(.*)/, globalErrorHandler);
 

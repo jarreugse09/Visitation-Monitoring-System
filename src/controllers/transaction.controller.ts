@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import transactionService from "../services/transaction.service";
 import { catchAsync } from "../utils/catchAsync";
 
-
 export const createTransaction = catchAsync(async (req: Request, res: Response) => {
     const newTransaction = await transactionService.createTransaction(req.body);
     res.status(201).json({

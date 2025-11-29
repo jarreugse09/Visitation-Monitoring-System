@@ -1,22 +1,41 @@
 import { Request, Response, NextFunction } from "express";
-import collegeService from "../services/college.service";
 import { catchAsync } from "../utils/catchAsync";
 import { AppError } from "../utils/AppError";
+import collegeService from "../services/college.service";
+import DepartmentService from "../services/department.service";
+import type { Types } from "mongoose";
 
 export const createCollege = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { name } = req.body
-    if (!name) return next(new AppError("Invalid empty fields", 400));
-    const exist = await collegeService.getCollegeByName(name.toLowerCase());
-    if (exist) return next(new AppError("College Name already exist", 400));
+    const { name, departments } = req.body;
 
-    const college = await collegeService.createCollege(name.toLowerCase());
-    if (!college) return next(new AppError("College Creation failed", 404));
+    if (!name || !departments || !Array.isArray(departments) || departments.length === 0) {
+        return next(new AppError("College name and departments are required.", 400));
+    }
+
+    // Check if college already exists
+    const exist = await collegeService.getCollegeByName(name.toLowerCase());
+    if (exist) return next(new AppError("College name already exists.", 400));
+
+    // Process departments
+    const departmentIds: Types.ObjectId[] = [];
+    for (const deptName of departments) {
+        let dept = await DepartmentService.getDepartmentByName(deptName.toLowerCase());
+        if (!dept) {
+            dept = await DepartmentService.createDepartment(deptName.toLowerCase());
+        }
+        departmentIds.push(dept._id);
+    }
+
+    // Create college with department names
+    const college = await collegeService.createCollege(name.toLowerCase(), departmentIds);
+    if (!college) return next(new AppError("College creation failed.", 500));
 
     res.status(201).json({
         status: "success",
-        data: college
+        data: college,
     });
 });
+
 
 export const getAllColleges = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const colleges = await collegeService.getAllColleges();

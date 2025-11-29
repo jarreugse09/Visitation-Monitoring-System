@@ -3,9 +3,8 @@ import { Types } from "mongoose";
 
 class DepartmentService {
     // Create a new department
-    async createDepartment(data: Partial<IDepartment>): Promise<IDepartment> {
-        const department = new Department(data);
-        return department.save();
+    async createDepartment(name: string): Promise<IDepartment> {
+        return await Department.create({ name: name })
     }
 
     // Get all departments

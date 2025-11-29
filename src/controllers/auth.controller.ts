@@ -10,7 +10,13 @@ import PositionService from "../services/position.service";
 
 
 export const signup = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, username, password, office, department, college } = req.body;
+    const { firstName, middleName, lastName, username, password, office, department, college } = req.body;
+    let name;
+    if (!firstName || !lastName || username || password || office) return next(new AppError("Invalid empty fields", 400));
+
+    if (!middleName) name = firstName.trim().toLowerCase() + ' ' + lastName.trim().toLowerCase()
+    else
+        name = firstName.trim().toLowerCase() + ' ' + middleName.trim().toLowerCase() + ' ' + lastName.trim().toLowerCase();
 
     let position: IPosition | null = null;
 
@@ -43,6 +49,8 @@ export const signup = catchAsync(async (req: Request, res: Response, next: NextF
         position, // pass the whole position object
     });
 
+    position.userId = user._id;
+    await position.save();
     res.status(201).json({
         status: "success",
         data: { user, token },

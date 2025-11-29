@@ -3,20 +3,20 @@ import { Types } from "mongoose";
 
 class OfficeService {
     // Create new office
-    async createOffice(data: Partial<IOffice>): Promise<IOffice> {
-        const office = new Office(data);
-        return office.save();
+    async createOffice(name: string): Promise<IOffice> {
+
+        return await Office.create({ name: name })
     }
 
     // Get all offices
     async getAllOffices(): Promise<IOffice[]> {
-        return Office.find();
+        return await Office.find();
     }
 
     // Get one office by ID
     async getOfficeById(id: string): Promise<IOffice | null> {
         if (!Types.ObjectId.isValid(id)) return null;
-        return Office.findById(id);
+        return await Office.findById(id);
     }
 
     async getOfficeByName(name: string): Promise<IOffice | null> {
@@ -27,13 +27,13 @@ class OfficeService {
     // Update office
     async updateOffice(id: string, data: Partial<IOffice>): Promise<IOffice | null> {
         if (!Types.ObjectId.isValid(id)) return null;
-        return Office.findByIdAndUpdate(id, data, { new: true });
+        return await Office.findByIdAndUpdate(id, data, { new: true });
     }
 
     // Delete office
     async deleteOffice(id: string): Promise<IOffice | null> {
         if (!Types.ObjectId.isValid(id)) return null;
-        return Office.findByIdAndDelete(id);
+        return await Office.findByIdAndDelete(id);
     }
 }
 
