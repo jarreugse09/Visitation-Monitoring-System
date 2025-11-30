@@ -5,7 +5,11 @@ import {
 
 const router = Router();
 
-router.post("/", login);
-router.post('/signup', signup)
+router.post("/tup/officer/", login);
 
+router.post('/tup/officer/signup', signup)
+
+
+router.post('/visitor/signup', signup)
+router.post("/visitor/", login);
 export default router;

@@ -10,6 +10,13 @@ class PositionService {
             departmentId: dept
         })
     }
+
+    async createPositionforCollegeDean(officeId: Types.ObjectId,) {
+        return await Position.create({
+            officeId: officeId
+
+        })
+    }
 }
 
 export default new PositionService()

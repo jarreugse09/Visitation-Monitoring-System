@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 
 
 college.seed.ts
+office.seed.ts
